@@ -1,0 +1,64 @@
+class Student
+{
+    private string property name;
+    private integer property grades[3];
+    private decimal property average;
+
+    public void method setName(string value)
+    {
+        this.name = value;
+    }
+
+    public void method setGrade(integer index, integer value)
+    {
+        this.grades[index] = value;
+    }
+
+    public void method calculateAverage()
+    {
+        integer variable sum = 0;
+        integer variable i;
+
+        iterate i (from 0 to 2, jumps of 1)
+        {
+            sum += this.grades[i];
+        }
+
+        this.average = sum / 3;
+    }
+
+    public decimal method getAverage()
+    {
+        return this.average;
+    }
+
+    public string method getStatus()
+    {
+        is (this.average >= 70)?
+        yes
+        {
+            return "Approved";
+        }
+        nope
+        {
+            return "Failed";
+        }
+    }
+
+    public void method showInfo()
+    {
+        write("Student: ", this.name);
+        write("Average: ", this.average);
+        write("Status: ", this.getStatus());
+    }
+}
+
+Student object s1;
+
+s1.setName("Mario");
+s1.setGrade(0, 80);
+s1.setGrade(1, 70);
+s1.setGrade(2, 65);
+
+s1.calculateAverage();
+s1.showInfo();
