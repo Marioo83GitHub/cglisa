@@ -1,1 +1,1 @@
-# cglisa language
+# cglisa language and code generator
