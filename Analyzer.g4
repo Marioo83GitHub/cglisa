@@ -1,10 +1,10 @@
-grammar SyntacticAnalyzer;
+grammar Analyzer;
 
-program: class_declaration* statement*;
+program: (statement)* EOF;
 
 statement:
     write_function
-    | 'stop' ';'
+    | stop_statement
     | request_function
     | declaration
     | assignation
@@ -19,7 +19,10 @@ statement:
     | class_instance
     | property_call ';'
     | method_call ';'
+    | class_declaration
 ;
+
+stop_statement: 'stop' ';';
 
 // Declarations
 declaration:
@@ -30,14 +33,18 @@ declaration:
 var_list: var_decl (',' var_decl)*;
 
 var_decl:
-    variable_reference
-    | variable_reference '=' expression
-    | variable_reference '=' array_values
+    ID
+    | ID '=' expression
 ;
 
-array_values: '[' array_elements ']';
-array_elements: expression (',' expression)*;
+// Functions and I/O
+function_declaration:
+    function_type 'function' ID '(' parameter_list? ')' '{' statement+ '}'
+;
 
+parameter_list: parameter (',' parameter)*;
+parameter: data_type ID;
+function_type: data_type | 'void';
 data_type:
     'integer'
     | 'decimal'
@@ -46,82 +53,71 @@ data_type:
     | 'string'
 ;
 
-// Functions and I/O
-function_declaration:
-    function_type 'function' ID '(' parameter_list? ')' '{' statement* '}'
-;
-
-parameter_list: parameter (',' parameter)*;
-parameter: data_type ID;
-function_type: data_type | 'void';
-
 write_function: 'write' '(' expression (',' expression)* ')' ';' ;
 request_function: 'request' '(' ID (',' expression)? ')' ';';
 
 // Assignments and operations
 assignation:
     ID '=' expression ';'
-    | ID '[' expression ']' '=' expression ';'
     | ID '.' ID '=' expression ';'
-    | ID '.' ID '[' expression ']' '=' expression ';'
-    | 'this' '.' ID '=' expression ';'
-    | 'this' '.' ID '[' expression ']' '=' expression ';'
+    | THIS '.' ID '=' expression ';'
 ;
 
 compact_operation:
     ID ('+='|'-='|'*='|'/=') expression ';'
-    | ID '[' expression ']' ('+='|'-='|'*='|'/=') expression ';'
     | ID '.' ID ('+='|'-='|'*='|'/=') expression ';'
-    | ID '.' ID '[' expression ']' ('+='|'-='|'*='|'/=') expression ';'
-    | 'this' '.' ID ('+='|'-='|'*='|'/=') expression ';'
-    | 'this' '.' ID '[' expression ']' ('+='|'-='|'*='|'/=') expression ';'
+    | THIS '.' ID ('+='|'-='|'*='|'/=') expression ';'
 ;
 
 // Control structures
 is_statement:
-    'is' '(' expression ')' '?' 'yes' '{' statement+ '}'
-    | 'is' '(' expression ')' '?' 'yes' '{' statement+ '}' or_is_statements 'nope' '{' statement+ '}'
+    'is' '(' expression ')' '?' 'yes' '{' yesBlock=statement_list '}'                                      # IsOnly
+    | 'is' '(' expression ')' '?' 'yes' '{' yesBlock=statement_list '}' 'nope' '{' nopeBlock=statement_list '}' # IsElse
 ;
 
-or_is_statements: ('or' 'is' '(' expression ')' '?' 'yes' '{' statement+ '}')*;
+statement_list: statement+;
 
 iterate_statement: 'iterate' ID '(' 'from' expression 'to' expression ',' 'jumps' 'of' expression ')' '{' statement+ '}' ;
+
+
 while_statement: 'while' '(' expression ')' '{' statement+ '}' ;
 do_while_statement: 'do' '{' statement+ '}' 'while' '(' expression ')' ';' ;
+
+
 switch_statement: 'switch' '(' expression ')' '{' case_block* default_block '}' ;
-case_block: 'case' expression ':' statement+ 'break' ';' ;
-default_block: 'default' ':' statement+ 'break' ';' ;
+case_block: 'case' expression ':' statement+ ;
+
+default_block: 'default' ':' statement+ ;
+
+
 return_statement: 'return' expression ';' ;
 
 // Simple POO
 class_declaration:
-    'class' ID '{' class_statement* '}'
+    'class' ID '{' class_statement+ '}'
 ;
 
 class_statement: property_declaration | method_declaration ;
 
 property_declaration:
-    access_type data_type 'property' variable_reference ('=' expression)? ';'
-;
-
-variable_reference:
-    ID
-    | ID '[' expression ']'
+    access_type data_type 'property' ID ('=' expression)? ';'
 ;
 
 method_declaration:
-    access_type function_type 'method' ID '(' parameter_list? ')' '{' statement* '}'
+    access_type function_type 'method' ID '(' parameter_list? ')' '{' statement+ '}'
 ;
 
 access_type: 'public' | 'private' ;
 class_instance: ID 'object' ID ';' ; // ej: Person object p;
+
 property_call: 
     ID '.' ID          // obj.property  
-    | 'this' '.' ID    // this.property
+    | THIS '.' ID    // this.property
 ;
+
 method_call: 
     ID '.' ID '(' argument_list? ')'     // obj.method()
-    | 'this' '.' ID '(' argument_list? ')'  // this.method()
+    | THIS '.' ID '(' argument_list? ')'  // this.method()
 ;
 
 argument_list: expression (',' expression)*;
@@ -134,24 +130,23 @@ expression:
     | '-' expression
     | CONST_ID
     | ID
-    | ID '[' expression ']'
     | 'true'
     | 'false'
     | expression ('and'|'or') expression
     | expression ('=='|'!='|'<'|'>'|'<='|'>=') expression
     | expression ('+'|'-'|'*'|'/') expression
-    | 'this' '.' ID
-    | 'this' '.' ID '[' expression ']'
+    | THIS '.' ID
     | ID '.' ID
-    | ID '.' ID '[' expression ']'
     | method_call
     | remainder_expression
     | '(' expression ')'
+    | property_call
 ;
 
 remainder_expression: 'remainder' 'of' '(' expression '/' expression ')' ;
 
 // Tokens
+THIS: 'this';
 CONST_ID: [A-Z_][A-Z0-9_]*;
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
 STRING: '"' (~["\\])* '"';

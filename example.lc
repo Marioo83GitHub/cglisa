@@ -1,7 +1,8 @@
 class Student
 {
-    private string property name;
-    private integer property grades[3];
+    private string property name = "Mario";
+    private integer property grade1;
+    private integer property grade2;
     private decimal property average;
 
     public void method setName(string value)
@@ -9,22 +10,19 @@ class Student
         this.name = value;
     }
 
-    public void method setGrade(integer index, integer value)
+    public void method setGrades(integer value1, integer value2)
     {
-        this.grades[index] = value;
+        this.grade1 = value1;
+        this.grade2 = value2;
     }
 
     public void method calculateAverage()
     {
         integer variable sum = 0;
-        integer variable i;
 
-        iterate i (from 0 to 2, jumps of 1)
-        {
-            sum += this.grades[i];
-        }
+        sum = this.grade1 + this.grade2;
 
-        this.average = sum / 3;
+        this.average = sum / 2;
     }
 
     public decimal method getAverage()
@@ -53,12 +51,19 @@ class Student
     }
 }
 
-Student object s1;
+# Student object s1;
 
-s1.setName("Mario");
-s1.setGrade(0, 80);
-s1.setGrade(1, 70);
-s1.setGrade(2, 65);
+# s1.setName("Mario");
+# s1.setGrade(0, 80);
+# s1.setGrade(1, 70);
+# s1.setGrade(2, 65);
 
-s1.calculateAverage();
-s1.showInfo();
+# s1.calculateAverage();
+# s1.showInfo();
+
+integer function sum(integer a, integer b)
+{
+    return a + b;
+}
+
+write("Holaa");
