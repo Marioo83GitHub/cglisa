@@ -20,6 +20,20 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
         
         output.append("#include <iostream>\n#include <string>\nusing namespace std;\n\n");
 
+        // Process Constants
+        for (var stmt : ctx.statement()) {
+            if (stmt.declaration() != null && stmt.declaration().expression() != null) {
+                output.append(visit(stmt.declaration()));
+            }
+        }
+
+        // Then process all function declarations
+        for (var stmt : ctx.statement()) {
+            if (stmt.function_declaration() != null) {
+                output.append(visit(stmt.function_declaration()));
+            }
+        }
+
         // Then process class declarations
         for (var stmt : ctx.statement()) {
             if (stmt.class_declaration() != null) {
@@ -27,17 +41,13 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
             }
         }
 
-        // First process all function declarations
-        for (var stmt : ctx.statement()) {
-            if (stmt.function_declaration() != null) {
-                output.append(visit(stmt.function_declaration()));
-            }
-        }
 
         // Finally generate main() with the remaining statements
         output.append("int main() {\n");
         for (var stmt : ctx.statement()) {
-            if (stmt.function_declaration() == null && stmt.class_declaration() == null) {  // Skip function declarations
+            if (stmt.function_declaration() == null
+                    && stmt.class_declaration() == null
+                    && !isConstantDeclaration(stmt.declaration())) {
                 output.append("    ");
                 output.append(visit(stmt));
             }
@@ -47,10 +57,18 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
         return output.toString();
     }
 
+    // Método auxiliar para verificar si es una declaración de constante
+    private boolean isConstantDeclaration(AnalyzerParser.DeclarationContext decl) {
+        if (decl == null) return false;
+        // Verificar si la declaración contiene la palabra 'constant'
+        return decl.getText().contains("constant");
+    }
+
     // NUEVA    
     @Override
     public String visitStatement(AnalyzerParser.StatementContext ctx) {
         // Method call statement: method_call ';'
+        
         if (ctx.method_call() != null) {
             return visit(ctx.method_call()) + ";\n";
         }
@@ -286,38 +304,48 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
     public String visitCompact_operation(AnalyzerParser.Compact_operationContext ctx) {
         StringBuilder cppCode = new StringBuilder();
         
-        // Get the operator (+=, -=, *=, /=)
-        String op = ctx.getChild(1).getText();
-        
-        // Handle property access cases (with .)
-        if (ctx.getChildCount() > 4 && ctx.getChild(1).getText().equals(".")) {
-            if (ctx.getChild(0).getText().equals("this")) {
-                // this.property OP value
-                cppCode.append("this->")
-                    .append(ctx.ID(0).getText())
-                    .append(" ")
-                    .append(op)
-                    .append(" ")
-                    .append(visit(ctx.expression()))
-                    .append(";");
-            } else {
-                // obj.property OP value
-                cppCode.append(ctx.ID(0).getText())
-                    .append(".")
-                    .append(ctx.ID(1).getText())
-                    .append(" ")
-                    .append(op)
-                    .append(" ")
-                    .append(visit(ctx.expression()))
-                    .append(";");
+        // Encontrar el operador compacto
+        String operator = null;
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            String childText = ctx.getChild(i).getText();
+            if (childText.equals("+=") || childText.equals("-=") || 
+                childText.equals("*=") || childText.equals("/=")) {
+                operator = childText;
+                break;
             }
         }
-        // Simple variable case
+        
+        if (operator == null) {
+            throw new RuntimeException("No se encontró operador compacto");
+        }
+        
+        // Determinar el tipo de asignación
+        if (ctx.THIS() != null) {
+            // this.property OP value
+            cppCode.append("this->")
+                .append(ctx.ID(0).getText())
+                .append(" ")
+                .append(operator)
+                .append(" ")
+                .append(visit(ctx.expression()))
+                .append(";");
+        }
+        else if (ctx.ID().size() == 2) {
+            // obj.property OP value
+            cppCode.append(ctx.ID(0).getText())
+                .append(".")
+                .append(ctx.ID(1).getText())
+                .append(" ")
+                .append(operator)
+                .append(" ")
+                .append(visit(ctx.expression()))
+                .append(";");
+        }
         else {
             // var OP value
             cppCode.append(ctx.ID(0).getText())
                 .append(" ")
-                .append(op)
+                .append(operator)
                 .append(" ")
                 .append(visit(ctx.expression()))
                 .append(";");

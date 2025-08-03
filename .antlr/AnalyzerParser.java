@@ -187,6 +187,9 @@ public class AnalyzerParser extends Parser {
 		public Write_functionContext write_function() {
 			return getRuleContext(Write_functionContext.class,0);
 		}
+		public Compact_operationContext compact_operation() {
+			return getRuleContext(Compact_operationContext.class,0);
+		}
 		public Array_index_assignationContext array_index_assignation() {
 			return getRuleContext(Array_index_assignationContext.class,0);
 		}
@@ -201,9 +204,6 @@ public class AnalyzerParser extends Parser {
 		}
 		public AssignationContext assignation() {
 			return getRuleContext(AssignationContext.class,0);
-		}
-		public Compact_operationContext compact_operation() {
-			return getRuleContext(Compact_operationContext.class,0);
 		}
 		public Is_statementContext is_statement() {
 			return getRuleContext(Is_statementContext.class,0);
@@ -268,42 +268,42 @@ public class AnalyzerParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(89);
-				array_index_assignation();
+				compact_operation();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(90);
-				stop_statement();
+				array_index_assignation();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(91);
-				request_function();
+				stop_statement();
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(92);
-				declaration();
+				request_function();
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(93);
-				assignation();
+				declaration();
 				}
 				break;
 			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(94);
-				compact_operation();
+				assignation();
 				}
 				break;
 			case 8:
@@ -2943,9 +2943,9 @@ public class AnalyzerParser extends Parser {
 		"\u0000\u0000\u0000RU\u0001\u0000\u0000\u0000SQ\u0001\u0000\u0000\u0000"+
 		"ST\u0001\u0000\u0000\u0000TV\u0001\u0000\u0000\u0000US\u0001\u0000\u0000"+
 		"\u0000VW\u0005\u0000\u0000\u0001W\u0001\u0001\u0000\u0000\u0000Xs\u0003"+
-		"\u001a\r\u0000Ys\u0003\u0006\u0003\u0000Zs\u0003\b\u0004\u0000[s\u0003"+
-		"\u001c\u000e\u0000\\s\u0003\n\u0005\u0000]s\u0003\u001e\u000f\u0000^s"+
-		"\u0003 \u0010\u0000_s\u0003\"\u0011\u0000`s\u0003&\u0013\u0000as\u0003"+
+		"\u001a\r\u0000Ys\u0003 \u0010\u0000Zs\u0003\u0006\u0003\u0000[s\u0003"+
+		"\b\u0004\u0000\\s\u0003\u001c\u000e\u0000]s\u0003\n\u0005\u0000^s\u0003"+
+		"\u001e\u000f\u0000_s\u0003\"\u0011\u0000`s\u0003&\u0013\u0000as\u0003"+
 		"(\u0014\u0000bs\u0003*\u0015\u0000cs\u0003,\u0016\u0000ds\u0003\u0010"+
 		"\b\u0000es\u00034\u001a\u0000fg\u0003B!\u0000gh\u0005\u0001\u0000\u0000"+
 		"hs\u0001\u0000\u0000\u0000ij\u0003D\"\u0000jk\u0005\u0001\u0000\u0000"+

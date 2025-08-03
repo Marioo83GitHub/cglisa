@@ -4,12 +4,12 @@ program: (statement)* EOF;
 
 statement:
     write_function
+    | compact_operation
     | array_index_assignation
     | stop_statement
     | request_function
     | declaration
     | assignation
-    | compact_operation
     | is_statement
     | iterate_statement
     | while_statement
