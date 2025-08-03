@@ -1,69 +1,340 @@
-class Student
+# Programa completo de prueba para el traductor LISA -> C++
+# Este programa simula un sistema de gestión de inventario
+
+# ========== DECLARACIÓN DE CLASE ==========
+# Prueba: Clases con propiedades privadas/públicas, métodos, constructores implícitos
+class Product
 {
-    private string property name = "Mario";
-    private integer property grade1;
-    private integer property grade2;
-    private decimal property average;
-
-    public void method setName(string value)
+    private string property name = "Unknown";
+    private decimal property price = 0.0;
+    private integer property quantity = 0;
+    private boolean property inStock = false;
+    
+    # Métodos setter
+    public void method setName(string newName)
     {
-        this.name = value;
+        this.name = newName;
     }
-
-    public void method setGrades(integer value1, integer value2)
+    
+    public void method setPrice(decimal newPrice)
     {
-        this.grade1 = value1;
-        this.grade2 = value2;
-    }
-
-    public void method calculateAverage()
-    {
-        integer variable sum = 0;
-
-        sum = this.grade1 + this.grade2;
-
-        this.average = sum / 2;
-    }
-
-    public decimal method getAverage()
-    {
-        return this.average;
-    }
-
-    public string method getStatus()
-    {
-        is (this.average >= 70)?
+        # Prueba: Condicionales dentro de métodos
+        is (newPrice >= 0)?
         yes
         {
-            return "Approved";
+            this.price = newPrice;
         }
         nope
         {
-            return "Failed";
+            write("Error: Price cannot be negative");
+            this.price = 0.0;
         }
     }
-
-    public void method showInfo()
+    
+    public void method setQuantity(integer qty)
     {
-        write("Student: ", this.name);
-        write("Average: ", this.average);
-        write("Status: ", this.getStatus());
+        this.quantity = qty;
+        # Prueba: Operaciones compactas
+        this.inStock = this.quantity > 0;
+    }
+    
+    # Métodos getter
+    public string method getName()
+    {
+        return this.name;
+    }
+    
+    public decimal method getPrice()
+    {
+        return this.price;
+    }
+    
+    public integer method getQuantity()
+    {
+        return this.quantity;
+    }
+    
+    public boolean method isInStock()
+    {
+        return this.inStock;
+    }
+    
+    # Prueba: Método con cálculos y condicionales complejos
+    public string method getStockStatus()
+    {
+        is (this.quantity == 0)?
+        yes
+        {
+            return "Out of Stock";
+        }
+        nope
+        {
+            is (this.quantity <= 5)?
+            yes
+            {
+                return "Low Stock";
+            }
+            nope
+            {
+                return "In Stock";
+            }
+        }
+    }
+    
+    # Prueba: Método con operaciones aritméticas
+    public decimal method calculateTotalValue()
+    {
+        return this.price * this.quantity;
+    }
+    
+    public void method displayInfo()
+    {
+        write("Product: ", this.name);
+        write("Price: $", this.price);
+        write("Quantity: ", this.quantity);
+        write("Status: ", this.getStockStatus());
+        write("Total Value: $", this.calculateTotalValue());
+        write("------------------------");
     }
 }
 
-# Student object s1;
-
-# s1.setName("Mario");
-# s1.setGrade(0, 80);
-# s1.setGrade(1, 70);
-# s1.setGrade(2, 65);
-
-# s1.calculateAverage();
-# s1.showInfo();
-
-integer function sum(integer a, integer b)
+# ========== DECLARACIÓN DE FUNCIONES GLOBALES ==========
+# Prueba: Funciones con diferentes tipos de retorno y parámetros
+decimal function calculateDiscount(decimal price, integer discountPercent)
 {
-    return a + b;
+    decimal variable discount = price * discountPercent / 100;
+    return discount;
 }
 
-write("Holaa");
+integer function fibonacci(integer n)
+{
+    # Prueba: Recursión simulada con condicionales
+    is (n <= 1)?
+    yes
+    {
+        return n;
+    }
+    nope
+    {
+        # Nota: Esto no es verdadera recursión, solo para demostrar lógica
+        integer variable prev = 0;
+        integer variable curr = 1;
+        integer variable temp = 0;
+        
+        # Prueba: Bucle iterate
+        iterate i(from 2 to n, jumps of 1)
+        {
+            temp = curr + prev;
+            prev = curr;
+            curr = temp;
+        }
+        return curr;
+    }
+}
+
+boolean function isPrime(integer num)
+{
+    is (num <= 1)?
+    yes
+    {
+        return false;
+    }
+    nope
+    {
+        # Prueba: Variable con inicialización
+        integer variable divisor = 2;
+        
+        # Prueba: Bucle while con condiciones complejas
+        while (divisor * divisor <= num)
+        {
+            # Prueba: Operador remainder
+            integer variable rem = remainder of (num / divisor);
+            is (rem == 0)?
+            yes
+            {
+                return false;
+            }
+            
+            # Prueba: Operaciones compactas
+            divisor += 1;
+        }
+        return true;
+    }
+}
+
+void function processInventory()
+{
+    write("=== PROCESSING INVENTORY ===");
+    
+    # Prueba: Arrays con inicialización
+    integer array productIds[5] = [101, 102, 103, 104, 105];
+    decimal array prices[5] = [19.99, 25.50, 12.75, 8.99, 15.25];
+    
+    # Prueba: Variables de diferentes tipos
+    integer variable totalProducts = 5;
+    decimal variable totalInventoryValue = 0.0;
+    integer variable lowStockCount = 0;
+    
+    # Prueba: Constantes
+    integer constant DISCOUNT_THRESHOLD = 3;
+    decimal constant TAX_RATE = 0.08;
+    
+    write("Product Analysis:");
+    
+    # Prueba: Bucle iterate con arrays
+    iterate i(from 0 to totalProducts - 1, jumps of 1)
+    {
+        # Prueba: Acceso a arrays
+        integer variable currentId = productIds[i];
+        decimal variable currentPrice = prices[i];
+        
+        write("Processing Product ID: ", currentId);
+        
+        # Prueba: Condicionales anidados con operaciones
+        is (currentPrice > 20.0)?
+        yes
+        {
+            decimal variable discount = calculateDiscount(currentPrice, 10);
+            currentPrice -= discount;
+            write("Applied 10% discount. New price: $", currentPrice);
+        }
+        nope
+        {
+            is (currentPrice < 10.0)?
+            yes
+            {
+                lowStockCount += 1;
+                write("Low-value item detected");
+            }
+        }
+        
+        # Prueba: Operaciones compactas
+        totalInventoryValue += currentPrice;
+        
+        # Prueba: Asignación a arrays
+        prices[i] = currentPrice;
+    }
+    
+    # Prueba: Cálculos finales
+    decimal variable averagePrice = totalInventoryValue / totalProducts;
+    decimal variable totalWithTax = totalInventoryValue * (1.0 + TAX_RATE);
+    
+    write("=== INVENTORY SUMMARY ===");
+    write("Total Products: ", totalProducts);
+    write("Total Value: $", totalInventoryValue);
+    write("Average Price: $", averagePrice);
+    write("Total with Tax: $", totalWithTax);
+    write("Low-value items: ", lowStockCount);
+}
+
+# ========== FUNCIÓN PRINCIPAL SIMULADA ==========
+# Prueba: Input del usuario y switch
+void function userInterface()
+{
+    write("=== PRODUCT MANAGEMENT SYSTEM ===");
+    
+    # Prueba: Request function
+    integer variable option = 0;
+    write("Select option (1-4): ");
+    request(option, "Enter your choice: ");
+    
+    # Prueba: Switch statement
+    switch (option)
+    {
+        case 1:
+            write("Creating new product...");
+            # Prueba: Instanciación de clase
+            Product object newProduct;
+            
+            string variable productName = "DefaultProduct";
+            request(productName, "Enter product name: ");
+            newProduct.setName(productName);
+            
+            decimal variable productPrice = 0.0;
+            request(productPrice, "Enter price: ");
+            newProduct.setPrice(productPrice);
+            
+            integer variable productQty = 0;
+            request(productQty, "Enter quantity: ");
+            newProduct.setQuantity(productQty);
+            
+            newProduct.displayInfo();
+            stop;
+            
+        case 2:
+            write("Running Fibonacci sequence...");
+            integer variable fibNum = 10;
+            request(fibNum, "Enter number for Fibonacci: ");
+            integer variable result = fibonacci(fibNum);
+            write("Fibonacci of ", fibNum, " is: ", result);
+            stop;
+            
+        case 3:
+            write("Testing prime numbers...");
+            integer variable testNum = 17;
+            request(testNum, "Enter number to test: ");
+            boolean variable prime = isPrime(testNum);
+            is (prime)?
+            yes
+            {
+                write(testNum, " is prime!");
+            }
+            nope
+            {
+                write(testNum, " is not prime.");
+            }
+            stop;
+            
+        case 4:
+            processInventory();
+            stop;
+            
+        default:
+            write("Invalid option!");
+            stop;
+    }
+}
+
+# ========== PROGRAMA PRINCIPAL ==========
+# Prueba: Declaraciones múltiples y llamadas a funciones
+write("Starting LISA Language Test Program");
+write("===================================");
+
+# Prueba: Múltiples instancias de objetos
+Product object laptop;
+Product object mouse;
+Product object keyboard;
+
+# Configurar productos
+laptop.setName("Gaming Laptop");
+laptop.setPrice(999.99);
+laptop.setQuantity(3);
+
+mouse.setName("Wireless Mouse");
+mouse.setPrice(29.99);
+mouse.setQuantity(15);
+
+keyboard.setName("Mechanical Keyboard");
+keyboard.setPrice(79.99);
+keyboard.setQuantity(0);
+
+# Mostrar información de productos
+write("=== PRODUCT CATALOG ===");
+laptop.displayInfo();
+mouse.displayInfo();
+keyboard.displayInfo();
+
+# Prueba: Do-while loop
+integer variable counter = 1;
+write("Testing do-while loop:");
+do
+{
+    write("Counter: ", counter);
+    counter += 1;
+}
+while (counter <= 3);
+
+# Ejecutar interfaz de usuario
+userInterface();
+
+write("Program completed successfully!");

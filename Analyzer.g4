@@ -4,6 +4,7 @@ program: (statement)* EOF;
 
 statement:
     write_function
+    | array_index_assignation
     | stop_statement
     | request_function
     | declaration
@@ -16,11 +17,16 @@ statement:
     | switch_statement
     | function_declaration
     | return_statement
-    | class_instance
     | property_call ';'
     | method_call ';'
+    | function_call ';'
     | class_declaration
+    | class_instance
+    | array_declaration
 ;
+
+array_declaration: data_type 'array' ID '[' expression ']' ('=' array_elements)? ';';
+array_index_assignation: array_index '=' expression ';';
 
 stop_statement: 'stop' ';';
 
@@ -29,6 +35,12 @@ declaration:
     data_type 'variable' var_list ';'
     | data_type 'constant' CONST_ID '=' expression ';'
 ;
+
+// integer array numbers[5] = [1,2,3,4,5];
+// integer array numbers[5];
+// write(numbers[5]);
+// numbers[3] = 4;
+
 
 var_list: var_decl (',' var_decl)*;
 
@@ -86,10 +98,9 @@ do_while_statement: 'do' '{' statement+ '}' 'while' '(' expression ')' ';' ;
 
 switch_statement: 'switch' '(' expression ')' '{' case_block* default_block '}' ;
 case_block: 'case' expression ':' statement+ ;
-
 default_block: 'default' ':' statement+ ;
 
-
+function_call: ID '(' argument_list? ')';
 return_statement: 'return' expression ';' ;
 
 // Simple POO
@@ -108,6 +119,7 @@ method_declaration:
 ;
 
 access_type: 'public' | 'private' ;
+
 class_instance: ID 'object' ID ';' ; // ej: Person object p;
 
 property_call: 
@@ -132,16 +144,19 @@ expression:
     | ID
     | 'true'
     | 'false'
+    | property_call
+    | method_call
+    | function_call
     | expression ('and'|'or') expression
     | expression ('=='|'!='|'<'|'>'|'<='|'>=') expression
     | expression ('+'|'-'|'*'|'/') expression
-    | THIS '.' ID
-    | ID '.' ID
-    | method_call
     | remainder_expression
     | '(' expression ')'
-    | property_call
+    | array_index
 ;
+
+array_index: ID '[' expression ']'; 
+array_elements: '[' expression (',' expression)* ']';
 
 remainder_expression: 'remainder' 'of' '(' expression '/' expression ')' ;
 

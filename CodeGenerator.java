@@ -47,6 +47,28 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
         return output.toString();
     }
 
+    // NUEVA    
+    @Override
+    public String visitStatement(AnalyzerParser.StatementContext ctx) {
+        // Method call statement: method_call ';'
+        if (ctx.method_call() != null) {
+            return visit(ctx.method_call()) + ";\n";
+        }
+        
+        // Function call statement: function_call ';'
+        if (ctx.function_call() != null) {
+            return visit(ctx.function_call()) + ";\n";
+        }
+        
+        // Property call statement: property_call ';'
+        if (ctx.property_call() != null) {
+            return visit(ctx.property_call()) + ";\n";
+        }
+        
+        // Para todos los demás statements, usar el comportamiento por defecto
+        return visitChildren(ctx);
+    }
+
     @Override
     public String visitExpression(AnalyzerParser.ExpressionContext ctx) {
         if (ctx.NUMBER() != null) {
@@ -61,8 +83,8 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
         if (ctx.CONST_ID() != null) {
             return ctx.CONST_ID().getText();
         }
-        if (ctx.ID() != null && ctx.ID().size() > 0 && ctx.getChildCount() == 1) {
-            return ctx.ID(0).getText();  // Get first ID token
+        if (ctx.ID() != null && ctx.getChildCount() == 1) {
+            return ctx.ID().getText();  // Get first ID token
         }
         if (ctx.getChild(0).getText().equals("-")) {
             return "-" + visit(ctx.expression(0));
@@ -70,22 +92,17 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
         if (ctx.getChild(0).getText().equals("(")) {
             return "(" + visit(ctx.expression(0)) + ")";
         }
-
         if (ctx.method_call() != null) {
             return visit(ctx.method_call());
+        }
+        if (ctx.function_call() != null) {
+            return visit(ctx.function_call());
         }
         if (ctx.property_call() != null) {
             return visit(ctx.property_call());
         }
         if (ctx.remainder_expression() != null) {
             return visit(ctx.remainder_expression());
-        }
-        if (ctx.method_call() != null) {
-            return visit(ctx.method_call());
-        }
-
-        if (ctx.THIS() != null && ctx.ID() != null) {
-            return "this->" + ctx.ID(0).getText();
         }
 
         if (ctx.getChildCount() == 3) {
@@ -99,11 +116,69 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
     }
 
     @Override
+    public String visitProperty_call(AnalyzerParser.Property_callContext ctx) {
+        if (ctx.THIS() != null) {
+            // this.property -> this->property
+            return "this->" + ctx.ID(0).getText();
+        } else {
+            // obj.property -> obj.property (mantiene el punto en C++)
+            return ctx.ID(0).getText() + "." + ctx.ID(1).getText();
+        }
+    }
+
+    @Override
     public String visitMethod_call(AnalyzerParser.Method_callContext ctx) {
-        String object = ctx.THIS() != null ? "this" : ctx.ID(0).getText();
-        String method = ctx.ID(ctx.THIS() != null ? 0 : 1).getText(); // El nombre del método
-        String args = ctx.argument_list() != null ? visit(ctx.argument_list()) : "";
-        return object + "->" + method + "(" + args + ")";
+        String result;
+        
+        if (ctx.THIS() != null) {
+            // this.method() -> this->method()
+            String methodName = ctx.ID(0).getText();
+            result = "this->" + methodName;
+        } else {
+            // obj.method() -> obj.method() (mantiene el punto en C++)
+            String objectName = ctx.ID(0).getText();
+            String methodName = ctx.ID(1).getText();
+            result = objectName + "." + methodName;
+        }
+        
+        // Agregar argumentos
+        result += "(";
+        if (ctx.argument_list() != null) {
+            result += visit(ctx.argument_list());
+        }
+        result += ")";
+        
+        return result;
+    }
+
+    @Override
+    public String visitFunction_call(AnalyzerParser.Function_callContext ctx) {
+        // Para function_call solo hay un ID (nombre de la función)
+        String functionName = ctx.ID().getText();
+        
+        // Agregar argumentos
+        String result = functionName + "(";
+        if (ctx.argument_list() != null) {
+            result += visit(ctx.argument_list());
+        }
+        result += ")";
+        
+        return result;
+    }
+
+    @Override
+    public String visitArgument_list(AnalyzerParser.Argument_listContext ctx) {
+        StringBuilder args = new StringBuilder();
+        
+        List<AnalyzerParser.ExpressionContext> expressions = ctx.expression();
+        for (int i = 0; i < expressions.size(); i++) {
+            args.append(visit(expressions.get(i)));
+            if (i < expressions.size() - 1) {
+                args.append(", ");
+            }
+        }
+        
+        return args.toString();
     }
 
     @Override
@@ -403,7 +478,6 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
                 cppCode.append("            ").append(stmtCode);
             }
         }
-        cppCode.append("            break;\n");
         return cppCode.toString();
     }
 
@@ -418,7 +492,6 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
                 cppCode.append("            ").append(stmtCode);
             }
         }
-        cppCode.append("            break;\n");
         return cppCode.toString();
     }
 
@@ -495,6 +568,64 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
     }
 
     @Override
+    public String visitClass_instance(AnalyzerParser.Class_instanceContext ctx) {        
+        return ctx.ID(0).getText() + " " + ctx.ID(1).getText() + ";\n";
+    }
+
+    @Override
+    public String visitArray_declaration(AnalyzerParser.Array_declarationContext ctx) {
+        // Obtener el tipo de dato y convertirlo
+        String convertedType = convertType(ctx.data_type().getText());
+        
+        // Obtener el nombre del array
+        String arrayName = ctx.ID().getText();
+        
+        // Obtener el tamaño del array
+        String arraySize = visit(ctx.expression()); // La primera expresión es el tamaño
+        
+        StringBuilder result = new StringBuilder();
+        
+        // Si hay inicialización con elementos
+        if (ctx.array_elements() != null) {
+            // Declaración con inicialización: tipo nombre[tamaño] = {elementos}
+            result.append(convertedType).append(" ").append(arrayName);
+            result.append("[").append(arraySize).append("] = {");
+            
+            // Obtener todos los elementos del array
+            List<AnalyzerParser.ExpressionContext> elements = ctx.array_elements().expression();
+            for (int i = 0; i < elements.size(); i++) {
+                if (i > 0) {
+                    result.append(", ");
+                }
+                result.append(visit(elements.get(i)));
+            }
+            
+            result.append("}");
+        } else {
+            // Declaración sin inicialización: tipo nombre[tamaño]
+            result.append(convertedType).append(" ").append(arrayName);
+            result.append("[").append(arraySize).append("]");
+        }
+        
+        result.append(";\n");
+        return result.toString();
+    }
+
+    @Override
+    public String visitArray_index_assignation(AnalyzerParser.Array_index_assignationContext ctx) {
+        String arrayAccess = visit(ctx.array_index());
+        String value = visit(ctx.expression());
+        return arrayAccess + " = " + value + ";\n";
+    }
+
+    @Override
+    public String visitArray_index(AnalyzerParser.Array_indexContext ctx) {
+        String arrayName = ctx.ID().getText();
+        String index = visit(ctx.expression()); // Procesa la expresión por si tiene operaciones
+        return arrayName + "[" + index + "]";
+    }
+
+    @Override
     public String visitClass_declaration(AnalyzerParser.Class_declarationContext ctx) {
         StringBuilder publicStuff = new StringBuilder();
         StringBuilder privateStuff = new StringBuilder();
@@ -555,4 +686,6 @@ public class CodeGenerator extends AnalyzerBaseVisitor<String> {
         cppCode.append("};\n\n"); 
         return cppCode.toString();
     }
+
+
 }
