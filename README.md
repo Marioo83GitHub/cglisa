@@ -1,6 +1,9 @@
 # LISA Programming Language
 
-![LISA Logo](logo.png)
+<div align="center">
+  <img src="logo.png" alt="LISA Logo" width="300">
+</div>
+<!-- Reemplaza 'logo.png' con la ruta correcta de tu logo -->
 <!-- Reemplaza 'logo.png' con la ruta correcta de tu logo -->
 
 LISA es un lenguaje de programación compilado que utiliza ANTLR para el análisis sintáctico y genera código C++ ejecutable.
