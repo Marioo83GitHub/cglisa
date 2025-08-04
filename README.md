@@ -1,16 +1,14 @@
 # LISA Programming Language
 
 <div align="center">
-  <img src="logo.png" alt="LISA Logo" width="300">
+  <img src="logo.png" alt="LISA Logo" width="400">
 </div>
-<!-- Reemplaza 'logo.png' con la ruta correcta de tu logo -->
-<!-- Reemplaza 'logo.png' con la ruta correcta de tu logo -->
 
 LISA es un lenguaje de programación compilado que utiliza ANTLR para el análisis sintáctico y genera código C++ ejecutable.
 
 ## 🚀 Características
 
-- Sintaxis moderna y expresiva
+- Sintaxis moderna, expresiva e intuitiva
 - Compilación a C++ nativo
 - Análisis sintáctico robusto con ANTLR
 - Generación automática de código optimizado
@@ -19,7 +17,7 @@ LISA es un lenguaje de programación compilado que utiliza ANTLR para el anális
 
 Antes de usar LISA, asegúrate de tener instalado:
 
-- **Java** (JDK 8 o superior)
+- **Java** (preferiblemente JDK 24)
 - **ANTLR 4**
 - **g++** (compilador de C++)
 - **javac** (compilador de Java)
@@ -28,8 +26,8 @@ Antes de usar LISA, asegúrate de tener instalado:
 
 1. Clona este repositorio:
 ```bash
-git clone https://github.com/tu-usuario/lisa-language.git
-cd lisa-language
+git clone https://github.com/Marioo83GitHub/cglisa.git
+cd cglisa
 ```
 
 2. Asegúrate de tener ANTLR4 en tu classpath o disponible globalmente.
