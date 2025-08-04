@@ -1,0 +1,30 @@
+# Programa 1: Factorial Calculator
+integer function factorial(integer n)
+{
+    integer variable result = 1;
+
+    integer variable i;
+    iterate i(from 1 to n, jumps of 1)
+    {
+        result *= i;
+    }
+    
+    return result;
+}
+
+write("=== Factorial Calculator ===");
+
+integer variable number = 5;
+integer variable result = factorial(number);
+write("Factorial of ", number, " is: ", result);
+
+integer array numbers[4] = [3, 4, 6, 7];
+
+integer variable i;
+iterate i(from 0 to 3, jumps of 1)
+{
+    integer variable currentNum = numbers[i];
+    integer variable currentResult = factorial(currentNum);
+    write("Factorial of ", currentNum, " = ", currentResult);
+}
+
