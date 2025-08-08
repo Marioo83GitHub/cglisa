@@ -369,11 +369,6 @@ light.showLight();
 - Asegúrate de que tu archivo se llame exactamente `example.lc`
 - Debe estar en la misma carpeta que `run.sh`
 
-### ❌ El programa no hace nada
-**Solución:** 
-- Revisa que tu código tenga la estructura: `programa principal { ... }`
-- Verifica que uses `escribir()` para mostrar resultados
-
 ## 🎯 Flujo de trabajo típico
 
 1. **Escribir código:** Edita `example.lc` con tu código LISA
