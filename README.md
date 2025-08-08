@@ -4,104 +4,195 @@
   <img src="logo.png" alt="LISA Logo" width="400">
 </div>
 
-LISA es un lenguaje de programación compilado que utiliza ANTLR para el análisis sintáctico y genera código C++ ejecutable.
+LISA es un lenguaje de programación moderno y fácil de usar que compila a código C++ ejecutable. ¡No necesitas conocimientos previos de compiladores o herramientas complejas!
 
-## 🚀 Características
+## 🚀 ¿Qué es LISA?
 
-- Sintaxis moderna, expresiva e intuitiva
-- Compilación a C++ nativo
-- Análisis sintáctico robusto con ANTLR
-- Generación automática de código optimizado
+LISA es un lenguaje diseñado para ser:
+- **Fácil de aprender:** Sintaxis moderna e intuitiva
+- **Rápido:** Se compila a código C++ optimizado
+- **Simple:** Un solo comando ejecuta todo el proceso
+- **Potente:** Funcionalidades modernas sin complicaciones
 
-## 📋 Requisitos
+## 📋 ¿Qué necesitas instalar?
 
-Antes de usar LISA, asegúrate de tener instalado:
+Solo necesitas 3 cosas básicas:
 
-- **Java** (preferiblemente JDK 24)
-- **ANTLR 4**
-- **g++** (compilador de C++)
-- **javac** (compilador de Java)
+### 1. **Editor de código**
+- Visual Studio Code (recomendado)
+- O cualquier editor con terminal integrada
 
-## 📦 Instalación
+### 2. **Java JDK 24**
+- Descarga desde: [Oracle JDK](https://www.oracle.com/java/technologies/downloads/)
+- O usa OpenJDK desde tu gestor de paquetes
 
-1. Clona este repositorio:
+### 3. **Compilador C++ (g++)**
+- **Windows:** Instala MinGW o usar Git Bash
+- **Ubuntu/Linux:** `sudo apt install g++`
+- **macOS:** `xcode-select --install`
+
+## 📦 Instalación de LISA
+
+### Paso 1: Descargar LISA
 ```bash
 git clone https://github.com/Marioo83GitHub/cglisa.git
 cd cglisa
 ```
 
-2. Asegúrate de tener ANTLR4 en tu classpath o disponible globalmente.
+### Paso 2: ¡Listo para usar!
+No necesitas compilar nada más. Todo viene precompilado y listo.
 
-## 🛠️ Uso del Compilador
+## 🎯 Tu primer programa en LISA
 
-### Paso 1: Preparar el analizador ANTLR
+### Paso 1: Crear tu archivo
+1. Abre tu editor de código (Visual Studio Code)
+2. Crea un archivo llamado `example.lc` en la carpeta del proyecto
+3. Escribe tu código LISA (ver ejemplos abajo)
 
-Genera las clases Java desde la gramática:
-
-```bash
-antlr4 Analyzer.g4 -visitor
-```
-
-### Paso 2: Compilar el código Java
-
-Compila todos los archivos Java generados:
+### Paso 2: Ejecutar tu programa
+Abre la terminal en la carpeta del proyecto y ejecuta:
 
 ```bash
-javac *.java
+./run.sh
 ```
 
-### Paso 3: Ejecutar el compilador LISA
+¡Eso es todo! El script automáticamente:
+- ✅ Compila tu código LISA
+- ✅ Genera el código C++
+- ✅ Compila el ejecutable
+- ✅ Ejecuta tu programa
 
-Ejecuta el compilador principal (asegúrate de tener un archivo `example.lc`):
+## 💡 Ejemplo básico
 
+Crea un archivo `example.lc` con este contenido:
+
+```lisa
+programa principal {
+    escribir("¡Hola mundo desde LISA!");
+    
+    entero numero = 42;
+    escribir("El número es: ", numero);
+}
+```
+
+Luego ejecuta:
 ```bash
-java Main
+./run.sh
 ```
 
-**Nota:** El archivo fuente de LISA debe tener la extensión `.lc` y llamarse `example.lc` para que el compilador lo reconozca automáticamente.
+## 🛠️ Más ejemplos de código LISA
 
-### Paso 4: Compilar el código C++ generado
-
-Una vez generado el archivo `output.cpp`, compílalo:
-
-```bash
-g++ output.cpp -o program.exe
+### Variables y tipos de datos
+```lisa
+programa principal {
+    // Números enteros
+    entero edad = 25;
+    
+    // Números decimales
+    decimal precio = 19.99;
+    
+    // Texto
+    texto nombre = "Juan";
+    
+    // Booleanos
+    booleano activo = verdadero;
+    
+    escribir("Nombre: ", nombre);
+    escribir("Edad: ", edad);
+}
 ```
 
-### Paso 5: Ejecutar el programa
-
-```bash
-./program.exe
+### Operaciones matemáticas
+```lisa
+programa principal {
+    entero a = 10;
+    entero b = 5;
+    
+    entero suma = a + b;
+    entero resta = a - b;
+    entero multiplicacion = a * b;
+    entero division = a / b;
+    
+    escribir("Suma: ", suma);
+    escribir("Resta: ", resta);
+    escribir("Multiplicación: ", multiplicacion);
+    escribir("División: ", division);
+}
 ```
 
-## 📝 Ejemplo de uso completo
-
-```bash
-# 1. Generar analizador ANTLR
-antlr4 Analyzer.g4 -visitor
-
-# 2. Compilar Java
-javac *.java
-
-# 3. Compilar archivo LISA (example.lc)
-java Main
-
-# 4. Compilar C++ generado
-g++ output.cpp -o program.exe
-
-# 5. Ejecutar programa
-./program.exe
+### Estructuras de control
+```lisa
+programa principal {
+    entero numero = 15;
+    
+    si (numero > 10) {
+        escribir("El número es mayor que 10");
+    } sino {
+        escribir("El número es menor o igual que 10");
+    }
+    
+    // Bucle
+    para (entero i = 1; i <= 5; i = i + 1) {
+        escribir("Iteración: ", i);
+    }
+}
 ```
 
-## 📁 Estructura del proyecto
+## 🚨 Solución de problemas comunes
+
+### ❌ Error: "java no se reconoce como comando"
+**Solución:** Java no está instalado o no está en el PATH
+- Instala JDK 24
+- Verifica con: `java -version`
+
+### ❌ Error: "g++ no se reconoce como comando"
+**Solución:** g++ no está instalado
+- **Windows:** Instala MinGW o usa Git Bash
+- **Linux:** `sudo apt install g++`
+- **macOS:** `xcode-select --install`
+
+### ❌ Error: "No such file example.lc"
+**Solución:** 
+- Asegúrate de que tu archivo se llame exactamente `example.lc`
+- Debe estar en la misma carpeta que `run.sh`
+
+### ❌ El programa no hace nada
+**Solución:** 
+- Revisa que tu código tenga la estructura: `programa principal { ... }`
+- Verifica que uses `escribir()` para mostrar resultados
+
+## 📁 ¿Qué contiene el proyecto?
 
 ```
-lisa-language/
-├── README.md
-├── logo.png
-├── Analyzer.g4         # Gramática ANTLR4
-├── Main.java           # Punto de entrada del compilador
-├── example.lc          # Archivo de ejemplo en LISA
-├── output.cpp          # Código C++ generado
-└── program.exe         # Ejecutable final
+cglisa/
+├── README.md           # Esta guía
+├── logo.png           # Logo de LISA
+├── run.sh             # Script que ejecuta todo (¡lo único que necesitas!)
+├── example.lc         # Tu código fuente LISA
+├── output.cpp         # Código C++ generado (automático)
+├── program.exe        # Tu programa ejecutable (automático)
+└── [archivos internos del compilador]
 ```
+
+## 🎯 Flujo de trabajo típico
+
+1. **Escribir código:** Edita `example.lc` con tu código LISA
+2. **Ejecutar:** `./run.sh` en la terminal
+3. **Ver resultado:** Tu programa se ejecuta automáticamente
+4. **Repetir:** Modifica el código y vuelve a ejecutar
+
+## 🤝 ¿Necesitas ayuda?
+
+- 🐛 **Reportar problemas:** [Abrir issue](https://github.com/Marioo83GitHub/cglisa/issues)
+- 💡 **Sugerencias:** Usa las issues del repositorio
+- 📖 **Más ejemplos:** Revisa la carpeta de ejemplos (si existe)
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - puedes usarlo libremente.
+
+---
+
+<div align="center">
+  <b>¡Disfruta programando en LISA! 🚀</b>
+</div>

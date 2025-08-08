@@ -1,0 +1,19 @@
+# Crear un programa que le pida un numero al usuario 
+# y que calcule su factorial mediante una funcion
+
+integer function calcularFactorial(integer n)
+{
+    integer variable result = 1;
+
+    integer variable i;
+    iterate i (from 1 to n, jumps of 1)
+    {
+        result *= i;
+    }
+
+    return result;
+}
+
+integer variable number;
+request(number, "Ingrese el numero para calcular su factorial: ");
+write("Factorial de ", number, " = ", calcularFactorial(number));
